@@ -13,4 +13,4 @@ if __name__ != "__main__":
     except Exception:
         pass
 
-__all__ = ["UnSwagActivations", "unswag_relu"]
+__all__ = ["UnSwagActivations", "unswag_relu", "boot_sequence"]
