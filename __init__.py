@@ -1,5 +1,4 @@
-from .core import sophia_forward, init_sophia_weights
-from .trainer import train_step, mse_loss
-from .accelerator import initialize_tpu
+from .core import UnSwagActivations
+from .layers import unswag_relu
 
-__version__ = "0.1.0"
+__all__ = ["UnSwagActivations", "unswag_relu"]
