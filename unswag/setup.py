@@ -3,16 +3,14 @@ from setuptools import setup, find_packages
 setup(
     name="unswag",
     version="0.1.0",
-    description="32x Activation Compression for TPU Training via Structural Isomorphism.",
-    author="John Augustine Young",
-    author_email="cleanroomresearch@gmail.com", # ;)
-    packages=find_packages(),
+    description="32x Activation Compression for TPU Training",
+    author="The Clean Room",
+    packages=find_packages(), 
     install_requires=[
-        "jax[tpu]",
-        "flax",
-        "numpy",
-        "requests", # Needed for Kaggle TPU handshake
+        "jax",
+        "jaxlib",
     ],
+    # Fixed the parenthesis here
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
