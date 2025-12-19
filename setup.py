@@ -5,7 +5,7 @@ setup(
     version="0.1.0",
     description="High-integrity, memory-efficient JAX kernels for Gemma-9B fine-tuning.",
     author="John Augustine Young",
-    author_email="incognito@thecleanroom.ai", # ;)
+    author_email="cleanroomresearch@gmail.com", # ;)
     packages=find_packages(),
     install_requires=[
         "jax[tpu]",
