@@ -78,6 +78,39 @@ def _unpack_1bit_kernel(
     packed_idx = block_start // 8 + tl.arange(0, BLOCK_SIZE)
     # This part requires careful indexing in Triton to broadcast the byte
     # For simplicity v1, we iterate the bits again
+
+    @triton.jit
+def _pack_2bit_silu_kernel(
+    x_ptr, out_ptr, n_elements,
+    BLOCK_SIZE: tl.constexpr,
+):
+    pid = tl.program_id(axis=0)
+    # Each thread block processes BLOCK_SIZE bytes, which is BLOCK_SIZE * 4 elements
+    block_start = pid * BLOCK_SIZE * 4
+    offsets = block_start + tl.arange(0, BLOCK_SIZE) * 4
+    
+    packed_val = tl.zeros([BLOCK_SIZE], dtype=tl.int8)
+    
+    for i in range(4): # 4 elements per byte
+        curr_idx = offsets + i
+        mask = curr_idx < n_elements
+        x = tl.load(x_ptr + curr_idx, mask=mask, other=0.0)
+        
+        # 2-bit Encoding Logic:
+        # bit_0: Sign (x >= 0)
+        # bit_1: Magnitude (|x| >= 2.0)
+        bit_0 = (x >= 0).to(tl.int8)
+        bit_1 = (tl.abs(x) >= 2.0).to(tl.int8)
+        
+        # Combine: bit_1 is the 2nd bit, bit_0 is the 1st
+        two_bits = (bit_1 << 1) | bit_0
+        
+        # Shift and accumulate (i*2 because each takes 2 bits)
+        packed_val = packed_val | (two_bits << (i * 2))
+
+    out_idx = block_start // 4 + tl.arange(0, BLOCK_SIZE)
+    out_mask = out_idx < (n_elements + 3) // 4
+    tl.store(out_ptr + out_idx, packed_val, mask=out_mask)
     
     for i in range(8):
         curr_idx = offsets + i
@@ -94,8 +127,7 @@ def _unpack_1bit_kernel(
         val = tl.where(bit == 1, 1.0, -1.0)
         
         tl.store(out_ptr + curr_idx, val, mask=mask)
-
-
+        
 # -----------------------------------------------------------------------------
 # PYTHON WRAPPERS
 # -----------------------------------------------------------------------------
