@@ -1,27 +1,20 @@
-# unswag/__init__.py
+from .model import UnSwagModel
+from .trainer import UnSwagTrainer
+from .surgery import apply_unswag_surgery
+from .data import StreamingContextDataLoader
 
-from .core import UnSwagActivations
-# FIX: Use a comma, not a second 'import'
-#from .layers import unswag_relu, UnSwagLinear
-from .ui import boot_sequence
-from .patcher import unswag_model
+# Optional Import: KV Cache (Handle missing dependency gracefully)
+try:
+    from .kv import UnSwagKV
+except ImportError:
+    UnSwagKV = None
 
-# Run the boot sequence on import
-# We check if it's the main process to avoid spamming in multi-host setups
-if __name__ != "__main__":
-    try:
-        import os
-        # Simple check to avoid running during build/install or CI
-        if "SETUP_PY" not in os.environ and "CI" not in os.environ:
-            boot_sequence()
-    except Exception:
-        pass
-
-# Export the public API
 __all__ = [
-    "UnSwagActivations", 
-    "unswag_relu", 
-    "UnSwagLinear",   # <--- Added this
-    "unswag_model",   # <--- Added this
-    "boot_sequence"
+    "UnSwagModel",
+    "UnSwagTrainer",
+    "apply_unswag_surgery",
+    "UnSwagKV",
+    "StreamingContextDataLoader",
 ]
+
+__version__ = "0.2.0"
