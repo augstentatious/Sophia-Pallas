@@ -2,7 +2,7 @@
 
 from .core import UnSwagActivations
 # FIX: Use a comma, not a second 'import'
-from .layers import unswag_relu, UnSwagLinear
+#from .layers import unswag_relu, UnSwagLinear
 from .ui import boot_sequence
 from .patcher import unswag_model
 
