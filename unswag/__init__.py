@@ -20,3 +20,13 @@ __all__ = [
 ]
 
 __version__ = "0.2.0"
+
+# UnSwag Attention (Protocol C)
+from .unswag_attention import (
+    UnSwagAttentionLayer,
+    UnSwagAttentionConfig,
+    SemanticRouter,
+    LocalTetherCNN,
+    AdaptiveSummaryRegister,
+    SparseGlobalAttention
+)
